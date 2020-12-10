@@ -23,21 +23,52 @@ router.get('/', authorize, (request, response) => {
 });
 
 router.post('/', authorize,  (request, response) => {
-    //const id = authorize vms
-    // Endpoint to create a new post
-    /*
-    const message = {
-        id: 1,
-        text: request.body.text,
-        type: 'video',
-        url: '',
-    };
-    const date = Date.parse(request.body.date);
-    */
-    
-    console.log(request.body);
 
-    return response.send("Post request");
+    // Endpoint to create a new post
+    let form = {
+        text: {required: true},
+        media: {
+            url: null,
+            type: null
+            }
+    };
+
+    const fieldMissing = {
+        code: null,
+        message: 'Please provide %s field'
+    };
+
+    if (!request.body["text"]) {
+
+        fieldMissing.code = form.text;
+        fieldMissing.message = fieldMissing.message.replace('%s', "text");
+
+        response.json(fieldMissing, 400);
+        return;
+    }
+
+    if (!request.body.media.url !== !request.body.media.type) {
+
+        fieldMissing.code = "media";
+        fieldMissing.message = fieldMissing.message.replace('%s', "media");
+
+        response.json(fieldMissing, 400);
+        return;
+    }
+
+    let params = {
+        userId: request.currentUser.id,
+        text: request.body.text,
+        media: {
+            url: request.body.media.url,
+            type: request.body.media.type
+        }
+    };
+
+    PostModel.create(params, () => {
+        response.status(201).json()
+    });
+
 });
 
 
