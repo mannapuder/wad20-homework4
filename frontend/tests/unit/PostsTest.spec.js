@@ -1,7 +1,8 @@
 import {mount, createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Posts from "../../src/components/Posts.vue";
+import Posts from "../../src/components/Posts.vue"
+import moment from 'moment';
 
 const localVue = createLocalVue();
 
@@ -100,7 +101,34 @@ describe('Posts', () => {
 
     const wrapper = mount(Posts, {router, store, localVue});
 
-    it('1 == 1', function () {
-        expect(true).toBe(true)
+    it('shows the correct amount of posts', () => {
+        const items = wrapper.findAll('.post');
+        expect(items.length).toEqual(testData.length);
+    });
+
+    it('shows the correct createTime', () => {
+        for (let i = 0; i < wrapper.findAll('.post').length; i += 1) {
+            const date = wrapper.findAll('.post').at(i).findAll('small').at(1).element.textContent;
+            const PretestDate = testData[i].createTime;
+            const testDate = moment(PretestDate).format('LLLL');
+            expect(date).toEqual(testDate);
+        }
+        
+    });
+
+    it('shows the appropriate media type', () => { 
+        let posts = wrapper.findAll(".post");
+        for (let i = 0; i < posts.length; i += 1) {
+            if (testData[i].media) {
+                if (testData[i].media.type === "image") {
+                    expect(posts.at(i).findAll("img").length).toBe(2); //Author avatar and post image.
+                } else if (testData[i].media.type === "video") {
+                    expect(posts.at(i).findAll("video").length).toBe(1);
+                }
+            } else {
+                expect(!posts.at(i).find(".post-image").exists);
+            }
+        }
+
     });
 });

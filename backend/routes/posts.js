@@ -23,9 +23,21 @@ router.get('/', authorize, (request, response) => {
 });
 
 router.post('/', authorize,  (request, response) => {
-
+    //const id = authorize vms
     // Endpoint to create a new post
+    /*
+    const message = {
+        id: 1,
+        text: request.body.text,
+        type: 'video',
+        url: '',
+    };
+    const date = Date.parse(request.body.date);
+    */
+    
+    console.log(request.body);
 
+    return response.send("Post request");
 });
 
 
