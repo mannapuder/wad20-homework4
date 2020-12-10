@@ -126,7 +126,7 @@ describe('Posts', () => {
                     expect(posts.at(i).findAll("video").length).toBe(1);
                 }
             } else {
-                expect(!posts.at(i).find(".post-image").exists);
+                expect(posts.at(i).find(".post-image").exists()).toBe(false); //No image or video.
             }
         }
 
